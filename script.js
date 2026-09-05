@@ -64,7 +64,9 @@ let accountNumber =
     document.getElementById("accountNumber");
 
 let paymentInstructions =
-    document.getElementById("paymentInstructions");
+    document.getElementById(
+        "paymentInstructions"
+    );
 
 
 /* =========================
@@ -113,40 +115,64 @@ let itemName =
    ========================= */
 
 let previewBusinessName =
-    document.getElementById("previewBusinessName");
+    document.getElementById(
+        "previewBusinessName"
+    );
 
 let previewBusinessPhone =
-    document.getElementById("previewBusinessPhone");
+    document.getElementById(
+        "previewBusinessPhone"
+    );
 
 let previewBusinessEmail =
-    document.getElementById("previewBusinessEmail");
+    document.getElementById(
+        "previewBusinessEmail"
+    );
 
 let previewCustomerName =
-    document.getElementById("previewCustomerName");
+    document.getElementById(
+        "previewCustomerName"
+    );
 
 let previewCustomerPhone =
-    document.getElementById("previewCustomerPhone");
+    document.getElementById(
+        "previewCustomerPhone"
+    );
 
 let previewInvoiceNumber =
-    document.getElementById("previewInvoiceNumber");
+    document.getElementById(
+        "previewInvoiceNumber"
+    );
 
 let previewInvoiceDate =
-    document.getElementById("previewInvoiceDate");
+    document.getElementById(
+        "previewInvoiceDate"
+    );
 
 let previewStatus =
-    document.getElementById("previewStatus");
+    document.getElementById(
+        "previewStatus"
+    );
 
 let previewItemName =
-    document.getElementById("previewItemName");
+    document.getElementById(
+        "previewItemName"
+    );
 
 let previewQuantity =
-    document.getElementById("previewQuantity");
+    document.getElementById(
+        "previewQuantity"
+    );
 
 let previewPrice =
-    document.getElementById("previewPrice");
+    document.getElementById(
+        "previewPrice"
+    );
 
 let previewItemTotal =
-    document.getElementById("previewItemTotal");
+    document.getElementById(
+        "previewItemTotal"
+    );
 
 
 /* =========================
@@ -154,16 +180,24 @@ let previewItemTotal =
    ========================= */
 
 let previewSubtotal =
-    document.getElementById("previewSubtotal");
+    document.getElementById(
+        "previewSubtotal"
+    );
 
 let previewDiscount =
-    document.getElementById("previewDiscount");
+    document.getElementById(
+        "previewDiscount"
+    );
 
 let previewTax =
-    document.getElementById("previewTax");
+    document.getElementById(
+        "previewTax"
+    );
 
 let previewTotal =
-    document.getElementById("previewTotal");
+    document.getElementById(
+        "previewTotal"
+    );
 
 
 /* =========================
@@ -171,13 +205,19 @@ let previewTotal =
    ========================= */
 
 let previewBankName =
-    document.getElementById("previewBankName");
+    document.getElementById(
+        "previewBankName"
+    );
 
 let previewAccountName =
-    document.getElementById("previewAccountName");
+    document.getElementById(
+        "previewAccountName"
+    );
 
 let previewAccountNumber =
-    document.getElementById("previewAccountNumber");
+    document.getElementById(
+        "previewAccountNumber"
+    );
 
 let previewPaymentInstructions =
     document.getElementById(
@@ -190,13 +230,29 @@ let previewPaymentInstructions =
    ========================= */
 
 let downloadBtn =
-    document.getElementById("downloadBtn");
+    document.getElementById(
+        "downloadBtn"
+    );
 
 let newInvoiceBtn =
-    document.getElementById("newInvoiceBtn");
+    document.getElementById(
+        "newInvoiceBtn"
+    );
+
+let cancelEditBtn =
+    document.getElementById(
+        "cancelEditBtn"
+    );
+
+let clearDataBtn =
+    document.getElementById(
+        "clearDataBtn"
+    );
 
 let historyContainer =
-    document.getElementById("historyContainer");
+    document.getElementById(
+        "historyContainer"
+    );
 
 
 /* =========================
@@ -285,6 +341,36 @@ function getSymbolForCurrency(
 
 
 /* =========================
+   FORMAT MONEY
+   ========================= */
+
+function formatMoney(
+    amount,
+    currencyCode
+) {
+
+    let symbol =
+        getSymbolForCurrency(
+            currencyCode
+        );
+
+    let number =
+        Number(amount) || 0;
+
+    return (
+        symbol +
+        number.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )
+    );
+}
+
+
+/* =========================
    TODAY'S DATE
    ========================= */
 
@@ -326,20 +412,78 @@ function createInvoiceNumber() {
             )
         ) || 0;
 
-    currentNumber++;
+
+    /*
+       Check saved invoices too.
+       This prevents the counter from
+       accidentally creating a number
+       that was already used.
+    */
+
+    let savedInvoices =
+        JSON.parse(
+            localStorage.getItem(
+                "invoiceHistory"
+            )
+        ) || [];
+
+
+    let highestNumber =
+        currentNumber;
+
+
+    for (
+        let i = 0;
+        i < savedInvoices.length;
+        i++
+    ) {
+
+        let savedNumber =
+            savedInvoices[i].number || "";
+
+
+        let match =
+            savedNumber.match(
+                /INV-(\d+)/
+            );
+
+
+        if (match) {
+
+            let number =
+                Number(match[1]);
+
+
+            if (
+                number >
+                highestNumber
+            ) {
+
+                highestNumber =
+                    number;
+            }
+        }
+    }
+
+
+    highestNumber++;
+
 
     localStorage.setItem(
         "invoiceNumber",
-        currentNumber
+        highestNumber
     );
+
 
     let newNumber =
         "INV-" +
-        String(currentNumber)
+        String(highestNumber)
             .padStart(4, "0");
+
 
     invoiceNumber.value =
         newNumber;
+
 
     previewInvoiceNumber.textContent =
         "Invoice #: " +
@@ -360,25 +504,32 @@ function loadInvoiceNumber() {
             )
         ) || 0;
 
-    if (currentNumber === 0) {
+
+    if (
+        currentNumber === 0
+    ) {
 
         createInvoiceNumber();
 
         return;
     }
 
+
     let existingNumber =
         "INV-" +
         String(currentNumber)
             .padStart(4, "0");
 
+
     invoiceNumber.value =
         existingNumber;
+
 
     previewInvoiceNumber.textContent =
         "Invoice #: " +
         existingNumber;
 }
+
 
 /* =========================
    BUSINESS DETAILS
@@ -476,44 +627,53 @@ function loadBusinessDetails() {
 
 
     if (savedName) {
+
         businessName.value =
             savedName;
     }
 
     if (savedPhone) {
+
         businessPhone.value =
             savedPhone;
     }
 
     if (savedEmail) {
+
         businessEmail.value =
             savedEmail;
     }
 
     if (savedBank) {
+
         bankName.value =
             savedBank;
     }
 
     if (savedAccountName) {
+
         accountName.value =
             savedAccountName;
     }
 
     if (savedAccountNumber) {
+
         accountNumber.value =
             savedAccountNumber;
     }
 
     if (savedInstructions) {
+
         paymentInstructions.value =
             savedInstructions;
     }
 
     if (savedAccent) {
+
         accentColor.value =
             savedAccent;
     }
+
 
     applyAccentColor();
 }
@@ -528,6 +688,7 @@ function applyAccentColor() {
     let selectedColor =
         accentColor.value ||
         "#b85c38";
+
 
     document.documentElement.style.setProperty(
         "--accent-color",
@@ -560,7 +721,9 @@ accentColor.addEventListener(
 
 function saveLogo() {
 
-    if (savedLogo !== "") {
+    if (
+        savedLogo !== ""
+    ) {
 
         localStorage.setItem(
             "businessLogo",
@@ -576,6 +739,7 @@ function loadLogo() {
         localStorage.getItem(
             "businessLogo"
         );
+
 
     if (logo) {
 
@@ -602,9 +766,12 @@ logoInput.addEventListener(
         let file =
             logoInput.files[0];
 
+
         if (!file) {
+
             return;
         }
+
 
         if (
             !file.type.startsWith(
@@ -622,8 +789,10 @@ logoInput.addEventListener(
             return;
         }
 
+
         let reader =
             new FileReader();
+
 
         reader.onload =
             function(event) {
@@ -631,16 +800,22 @@ logoInput.addEventListener(
                 savedLogo =
                     event.target.result;
 
+
                 previewLogo.src =
                     savedLogo;
+
 
                 previewLogo.style.display =
                     "block";
 
+
                 saveLogo();
             };
 
-        reader.readAsDataURL(file);
+
+        reader.readAsDataURL(
+            file
+        );
     }
 );
 
@@ -654,13 +829,18 @@ function updatePreviewStatus() {
     let status =
         invoiceStatus.value;
 
+
     previewStatus.textContent =
         status;
+
 
     previewStatus.className =
         "invoiceStatus";
 
-    if (status === "Paid") {
+
+    if (
+        status === "Paid"
+    ) {
 
         previewStatus.classList.add(
             "status-paid"
@@ -688,6 +868,8 @@ invoiceStatus.addEventListener(
     function() {
 
         updatePreviewStatus();
+
+        renderInvoicePreview();
     }
 );
 
@@ -699,6 +881,7 @@ invoiceStatus.addEventListener(
 function getAllItems() {
 
     let invoiceItems = [];
+
 
     invoiceItems.push({
 
@@ -729,6 +912,7 @@ function getAllItems() {
                     "input"
                 );
 
+
         invoiceItems.push({
 
             name:
@@ -756,7 +940,9 @@ function calculateTotals() {
     let items =
         getAllItems();
 
-    let subtotal = 0;
+
+    let subtotal =
+        0;
 
 
     for (
@@ -776,6 +962,7 @@ function calculateTotals() {
             discount.value
         ) || 0;
 
+
     let taxPercentage =
         Number(
             tax.value
@@ -789,7 +976,10 @@ function calculateTotals() {
 
     let taxAmount =
         amountAfterDiscount *
-        (taxPercentage / 100);
+        (
+            taxPercentage /
+            100
+        );
 
 
     let finalTotal =
@@ -823,11 +1013,13 @@ function updateBusinessPreview() {
         businessName.value ||
         "Business Name";
 
+
     previewBusinessPhone.textContent =
         businessPhone.value
             ? "Phone: " +
               businessPhone.value
             : "Phone: —";
+
 
     previewBusinessEmail.textContent =
         businessEmail.value
@@ -846,6 +1038,7 @@ function updateCustomerPreview() {
     previewCustomerName.textContent =
         customerName.value ||
         "Customer Name";
+
 
     previewCustomerPhone.textContent =
         customerPhone.value
@@ -867,17 +1060,20 @@ function updatePaymentPreview() {
               bankName.value
             : "Bank: —";
 
+
     previewAccountName.textContent =
         accountName.value
             ? "Account Name: " +
               accountName.value
             : "Account Name: —";
 
+
     previewAccountNumber.textContent =
         accountNumber.value
             ? "Account Number: " +
               accountNumber.value
             : "Account Number: —";
+
 
     previewPaymentInstructions.textContent =
         paymentInstructions.value
@@ -890,15 +1086,15 @@ function updatePaymentPreview() {
    UPDATE MAIN ITEM PREVIEW
    ========================= */
 
-function updateMainItemPreview(
-    symbol
-) {
+function updateMainItemPreview() {
 
     let mainQuantity =
         Number(quantity.value) || 0;
 
+
     let mainPrice =
         Number(price.value) || 0;
+
 
     let mainTotal =
         mainQuantity *
@@ -909,19 +1105,22 @@ function updateMainItemPreview(
         itemName.value ||
         "Item or Service";
 
+
     previewQuantity.textContent =
         mainQuantity;
 
+
     previewPrice.textContent =
-        symbol +
-        mainPrice.toLocaleString(
-            "en-US"
+        formatMoney(
+            mainPrice,
+            currency.value
         );
 
+
     previewItemTotal.textContent =
-        symbol +
-        mainTotal.toLocaleString(
-            "en-US"
+        formatMoney(
+            mainTotal,
+            currency.value
         );
 }
 
@@ -930,12 +1129,11 @@ function updateMainItemPreview(
    UPDATE ADDITIONAL ITEMS
    ========================= */
 
-function updateAdditionalItemsPreview(
-    symbol
-) {
+function updateAdditionalItemsPreview() {
 
     previewItemsContainer.innerHTML =
         "";
+
 
     let addedItems =
         itemsContainer.children;
@@ -953,18 +1151,22 @@ function updateAdditionalItemsPreview(
                     "input"
                 );
 
+
         let name =
             inputs[0].value;
+
 
         let itemQuantity =
             Number(
                 inputs[1].value
-            );
+            ) || 0;
+
 
         let itemPrice =
             Number(
                 inputs[2].value
-            );
+            ) || 0;
+
 
         let itemTotal =
             itemQuantity *
@@ -976,6 +1178,7 @@ function updateAdditionalItemsPreview(
                 "div"
             );
 
+
         row.className =
             "previewItemRow";
 
@@ -985,14 +1188,17 @@ function updateAdditionalItemsPreview(
                 "span"
             );
 
+
         nameCell.textContent =
-            name;
+            name ||
+            "Item or Service";
 
 
         let quantityCell =
             document.createElement(
                 "span"
             );
+
 
         quantityCell.textContent =
             itemQuantity;
@@ -1003,10 +1209,11 @@ function updateAdditionalItemsPreview(
                 "span"
             );
 
+
         priceCell.textContent =
-            symbol +
-            itemPrice.toLocaleString(
-                "en-US"
+            formatMoney(
+                itemPrice,
+                currency.value
             );
 
 
@@ -1015,10 +1222,11 @@ function updateAdditionalItemsPreview(
                 "span"
             );
 
+
         totalCell.textContent =
-            symbol +
-            itemTotal.toLocaleString(
-                "en-US"
+            formatMoney(
+                itemTotal,
+                currency.value
             );
 
 
@@ -1026,13 +1234,16 @@ function updateAdditionalItemsPreview(
             nameCell
         );
 
+
         row.appendChild(
             quantityCell
         );
 
+
         row.appendChild(
             priceCell
         );
+
 
         row.appendChild(
             totalCell
@@ -1051,36 +1262,38 @@ function updateAdditionalItemsPreview(
    ========================= */
 
 function updateTotalsPreview(
-    totals,
-    symbol
+    totals
 ) {
 
     previewSubtotal.textContent =
         "Subtotal: " +
-        symbol +
-        totals.subtotal.toLocaleString(
-            "en-US"
+        formatMoney(
+            totals.subtotal,
+            currency.value
         );
+
 
     previewDiscount.textContent =
         "Discount: -" +
-        symbol +
-        totals.discount.toLocaleString(
-            "en-US"
+        formatMoney(
+            totals.discount,
+            currency.value
         );
+
 
     previewTax.textContent =
         "Tax: " +
-        symbol +
-        totals.tax.toLocaleString(
-            "en-US"
+        formatMoney(
+            totals.tax,
+            currency.value
         );
+
 
     previewTotal.textContent =
         "Total: " +
-        symbol +
-        totals.total.toLocaleString(
-            "en-US"
+        formatMoney(
+            totals.total,
+            currency.value
         );
 
 
@@ -1094,13 +1307,12 @@ function updateTotalsPreview(
 
         totalElement.textContent =
             "Total: " +
-            symbol +
-            totals.total.toLocaleString(
-                "en-US"
+            formatMoney(
+                totals.total,
+                currency.value
             );
     }
 }
-
 
 /* =========================
    UPDATE INVOICE HEADER
@@ -1112,9 +1324,11 @@ function updateInvoiceHeader() {
         "Invoice #: " +
         invoiceNumber.value;
 
+
     previewInvoiceDate.textContent =
         "Date: " +
         invoiceDate.value;
+
 
     updatePreviewStatus();
 }
@@ -1125,9 +1339,6 @@ function updateInvoiceHeader() {
    ========================= */
 
 function renderInvoicePreview() {
-
-    let symbol =
-        getCurrencySymbol();
 
     let totals =
         calculateTotals();
@@ -1141,21 +1352,18 @@ function renderInvoicePreview() {
 
     updateInvoiceHeader();
 
-    updateMainItemPreview(
-        symbol
-    );
+    updateMainItemPreview();
 
-    updateAdditionalItemsPreview(
-        symbol
-    );
+    updateAdditionalItemsPreview();
 
     updateTotalsPreview(
-        totals,
-        symbol
+        totals
     );
 
 
-    if (savedLogo !== "") {
+    if (
+        savedLogo !== ""
+    ) {
 
         previewLogo.src =
             savedLogo;
@@ -1193,8 +1401,10 @@ addItemBtn.addEventListener(
                 "input"
             );
 
+
         newItem.type =
             "text";
+
 
         newItem.placeholder =
             "Enter item or service";
@@ -1205,11 +1415,14 @@ addItemBtn.addEventListener(
                 "input"
             );
 
+
         newQuantity.type =
             "number";
 
+
         newQuantity.placeholder =
             "Quantity";
+
 
         newQuantity.min =
             "1";
@@ -1220,11 +1433,14 @@ addItemBtn.addEventListener(
                 "input"
             );
 
+
         newPrice.type =
             "number";
 
+
         newPrice.placeholder =
             "Price";
+
 
         newPrice.min =
             "0";
@@ -1235,8 +1451,10 @@ addItemBtn.addEventListener(
                 "button"
             );
 
+
         removeBtn.type =
             "button";
+
 
         removeBtn.textContent =
             "Remove Item";
@@ -1257,13 +1475,16 @@ addItemBtn.addEventListener(
             newItem
         );
 
+
         itemRow.appendChild(
             newQuantity
         );
 
+
         itemRow.appendChild(
             newPrice
         );
+
 
         itemRow.appendChild(
             removeBtn
@@ -1273,6 +1494,27 @@ addItemBtn.addEventListener(
         itemsContainer.appendChild(
             itemRow
         );
+
+
+        newItem.addEventListener(
+            "input",
+            renderInvoicePreview
+        );
+
+
+        newQuantity.addEventListener(
+            "input",
+            renderInvoicePreview
+        );
+
+
+        newPrice.addEventListener(
+            "input",
+            renderInvoicePreview
+        );
+
+
+        renderInvoicePreview();
     }
 );
 
@@ -1346,6 +1588,7 @@ invoiceDate.addEventListener(
     }
 );
 
+
 /* =========================
    CREATE INVOICE DATA
    ========================= */
@@ -1375,10 +1618,14 @@ function createInvoiceData(
             currency.value,
 
         discount:
-            Number(discount.value) || 0,
+            Number(
+                discount.value
+            ) || 0,
 
         tax:
-            Number(tax.value) || 0,
+            Number(
+                tax.value
+            ) || 0,
 
         total:
             totalAmount,
@@ -1417,6 +1664,36 @@ function createInvoiceData(
 
 
 /* =========================
+   SHOW / HIDE EDIT MODE
+   ========================= */
+
+function showEditMode() {
+
+    generateBtn.textContent =
+        "Update Invoice";
+
+
+    cancelEditBtn.style.display =
+        "inline-block";
+}
+
+
+function hideEditMode() {
+
+    editingHistoryIndex =
+        null;
+
+
+    generateBtn.textContent =
+        "Generate Invoice";
+
+
+    cancelEditBtn.style.display =
+        "none";
+}
+
+
+/* =========================
    SAVE / UPDATE HISTORY
    ========================= */
 
@@ -1432,15 +1709,17 @@ function saveInvoiceToHistory(
         ) || [];
 
 
+    let wasEditing =
+        editingHistoryIndex !== null;
+
+
     let invoice =
         createInvoiceData(
             totalAmount
         );
 
 
-    if (
-        editingHistoryIndex !== null
-    ) {
+    if (wasEditing) {
 
         savedInvoices[
             editingHistoryIndex
@@ -1465,11 +1744,10 @@ function saveInvoiceToHistory(
     displayInvoiceHistory();
 
 
-    editingHistoryIndex =
-        null;
+    hideEditMode();
 
-    generateBtn.textContent =
-        "Generate Invoice";
+
+    return wasEditing;
 }
 
 
@@ -1499,6 +1777,7 @@ function displayInvoiceHistory() {
             `
             <p class="emptyHistory">
                 No saved invoices yet.
+                Your generated invoices will appear here.
             </p>
             `;
 
@@ -1547,10 +1826,9 @@ function displayInvoiceHistory() {
                 </p>
 
                 <p class="historyTotal">
-                    ${symbol}${Number(
-                        invoice.total
-                    ).toLocaleString(
-                        "en-US"
+                    ${formatMoney(
+                        invoice.total,
+                        invoice.currency
                     )}
                 </p>
 
@@ -1584,6 +1862,14 @@ function displayInvoiceHistory() {
 
                 <button
                     type="button"
+                    class="duplicateInvoiceBtn"
+                >
+                    Duplicate
+                </button>
+
+
+                <button
+                    type="button"
                     class="deleteInvoiceBtn"
                 >
                     Delete
@@ -1592,6 +1878,36 @@ function displayInvoiceHistory() {
             </div>
 
             `;
+
+
+        let historyStatus =
+            card.querySelector(
+                ".historyStatus"
+            );
+
+
+        if (
+            status === "Paid"
+        ) {
+
+            historyStatus.classList.add(
+                "status-paid"
+            );
+
+        } else if (
+            status === "Pending"
+        ) {
+
+            historyStatus.classList.add(
+                "status-pending"
+            );
+
+        } else {
+
+            historyStatus.classList.add(
+                "status-unpaid"
+            );
+        }
 
 
         let viewButton =
@@ -1607,6 +1923,23 @@ function displayInvoiceHistory() {
                 loadInvoiceFromHistory(
                     invoice,
                     i
+                );
+            }
+        );
+
+
+        let duplicateButton =
+            card.querySelector(
+                ".duplicateInvoiceBtn"
+            );
+
+
+        duplicateButton.addEventListener(
+            "click",
+            function() {
+
+                duplicateInvoiceFromHistory(
+                    invoice
                 );
             }
         );
@@ -1634,7 +1967,6 @@ function displayInvoiceHistory() {
         );
     }
 }
-
 
 /* =========================
    LOAD SAVED INVOICE
@@ -1690,7 +2022,9 @@ function loadInvoiceFromHistory(
         invoice.logo || "";
 
 
-    if (savedLogo !== "") {
+    if (
+        savedLogo !== ""
+    ) {
 
         previewLogo.src =
             savedLogo;
@@ -1722,11 +2056,13 @@ function loadInvoiceFromHistory(
 
 
     invoiceStatus.value =
-        invoice.status || "Unpaid";
+        invoice.status ||
+        "Unpaid";
 
 
     currency.value =
-        invoice.currency || "NGN";
+        invoice.currency ||
+        "NGN";
 
 
     discount.value =
@@ -1752,8 +2088,10 @@ function loadInvoiceFromHistory(
         itemName.value =
             items[0].name || "";
 
+
         quantity.value =
             items[0].quantity || "";
+
 
         price.value =
             items[0].price || "";
@@ -1783,8 +2121,7 @@ function loadInvoiceFromHistory(
     }
 
 
-    generateBtn.textContent =
-        "Update Invoice";
+    showEditMode();
 
 
     renderInvoicePreview();
@@ -1816,11 +2153,14 @@ function createSavedItemRow(
             "input"
         );
 
+
     newItem.type =
         "text";
 
+
     newItem.placeholder =
         "Enter item or service";
+
 
     newItem.value =
         item.name || "";
@@ -1831,14 +2171,18 @@ function createSavedItemRow(
             "input"
         );
 
+
     newQuantity.type =
         "number";
+
 
     newQuantity.placeholder =
         "Quantity";
 
+
     newQuantity.min =
         "1";
+
 
     newQuantity.value =
         item.quantity || "";
@@ -1849,14 +2193,18 @@ function createSavedItemRow(
             "input"
         );
 
+
     newPrice.type =
         "number";
+
 
     newPrice.placeholder =
         "Price";
 
+
     newPrice.min =
         "0";
+
 
     newPrice.value =
         item.price || "";
@@ -1867,8 +2215,10 @@ function createSavedItemRow(
             "button"
         );
 
+
     removeBtn.type =
         "button";
+
 
     removeBtn.textContent =
         "Remove Item";
@@ -1889,13 +2239,16 @@ function createSavedItemRow(
         newItem
     );
 
+
     itemRow.appendChild(
         newQuantity
     );
 
+
     itemRow.appendChild(
         newPrice
     );
+
 
     itemRow.appendChild(
         removeBtn
@@ -1912,14 +2265,194 @@ function createSavedItemRow(
         renderInvoicePreview
     );
 
+
     newQuantity.addEventListener(
         "input",
         renderInvoicePreview
     );
 
+
     newPrice.addEventListener(
         "input",
         renderInvoicePreview
+    );
+}
+
+
+/* =========================
+   DUPLICATE INVOICE
+   ========================= */
+
+function duplicateInvoiceFromHistory(
+    invoice
+) {
+
+    /*
+       A duplicate is treated as
+       a brand-new invoice.
+    */
+
+    editingHistoryIndex =
+        null;
+
+
+    businessName.value =
+        invoice.businessName || "";
+
+
+    businessPhone.value =
+        invoice.businessPhone || "";
+
+
+    businessEmail.value =
+        invoice.businessEmail || "";
+
+
+    bankName.value =
+        invoice.bankName || "";
+
+
+    accountName.value =
+        invoice.accountName || "";
+
+
+    accountNumber.value =
+        invoice.accountNumber || "";
+
+
+    paymentInstructions.value =
+        invoice.paymentInstructions || "";
+
+
+    accentColor.value =
+        invoice.accentColor ||
+        "#b85c38";
+
+
+    savedLogo =
+        invoice.logo || "";
+
+
+    if (
+        savedLogo !== ""
+    ) {
+
+        previewLogo.src =
+            savedLogo;
+
+        previewLogo.style.display =
+            "block";
+
+    } else {
+
+        previewLogo.style.display =
+            "none";
+    }
+
+
+    customerName.value =
+        invoice.customer || "";
+
+
+    customerPhone.value =
+        invoice.customerPhone || "";
+
+
+    currency.value =
+        invoice.currency ||
+        "NGN";
+
+
+    /*
+       Give the duplicate a fresh
+       invoice number and today's date.
+    */
+
+    createInvoiceNumber();
+
+    setTodayDate();
+
+
+    /*
+       A duplicated invoice starts
+       as Unpaid so a Paid invoice
+       isn't accidentally reused.
+    */
+
+    invoiceStatus.value =
+        "Unpaid";
+
+
+    discount.value =
+        invoice.discount || "";
+
+
+    tax.value =
+        invoice.tax || "";
+
+
+    let items =
+        invoice.items || [];
+
+
+    itemsContainer.innerHTML =
+        "";
+
+
+    if (
+        items.length > 0
+    ) {
+
+        itemName.value =
+            items[0].name || "";
+
+
+        quantity.value =
+            items[0].quantity || "";
+
+
+        price.value =
+            items[0].price || "";
+
+    } else {
+
+        itemName.value =
+            "";
+
+        quantity.value =
+            "";
+
+        price.value =
+            "";
+    }
+
+
+    for (
+        let i = 1;
+        i < items.length;
+        i++
+    ) {
+
+        createSavedItemRow(
+            items[i]
+        );
+    }
+
+
+    hideEditMode();
+
+
+    renderInvoicePreview();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    alert(
+        "Invoice duplicated. You can edit it before saving."
     );
 }
 
@@ -1940,6 +2473,33 @@ function deleteInvoiceFromHistory(
         ) || [];
 
 
+    if (
+        !savedInvoices[index]
+    ) {
+
+        return;
+    }
+
+
+    let invoiceNumberToDelete =
+        savedInvoices[index].number ||
+        "this invoice";
+
+
+    let confirmed =
+        confirm(
+            "Delete " +
+            invoiceNumberToDelete +
+            "?\n\nThis cannot be undone."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
     savedInvoices.splice(
         index,
         1
@@ -1954,8 +2514,245 @@ function deleteInvoiceFromHistory(
     );
 
 
+    /*
+       If the invoice being edited
+       was deleted, leave edit mode.
+    */
+
+    if (
+        editingHistoryIndex === index
+    ) {
+
+        hideEditMode();
+    }
+
+
     displayInvoiceHistory();
 }
+
+
+/* =========================
+   RESET FORM FOR NEW INVOICE
+   ========================= */
+
+function resetFormForNewInvoice() {
+
+    hideEditMode();
+
+
+    createInvoiceNumber();
+
+    setTodayDate();
+
+
+    customerName.value =
+        "";
+
+    customerPhone.value =
+        "";
+
+
+    itemName.value =
+        "";
+
+    quantity.value =
+        "";
+
+    price.value =
+        "";
+
+
+    discount.value =
+        "";
+
+    tax.value =
+        "";
+
+
+    invoiceStatus.value =
+        "Unpaid";
+
+
+    itemsContainer.innerHTML =
+        "";
+
+
+    savedLogo =
+        localStorage.getItem(
+            "businessLogo"
+        ) || "";
+
+
+    if (
+        savedLogo !== ""
+    ) {
+
+        previewLogo.src =
+            savedLogo;
+
+        previewLogo.style.display =
+            "block";
+
+    } else {
+
+        previewLogo.style.display =
+            "none";
+    }
+
+
+    renderInvoicePreview();
+}
+
+
+/* =========================
+   CANCEL EDIT
+   ========================= */
+
+cancelEditBtn.addEventListener(
+    "click",
+    function() {
+
+        let confirmed =
+            confirm(
+                "Cancel editing this invoice?\n\nYour changes will not be saved."
+            );
+
+
+        if (!confirmed) {
+
+            return;
+        }
+
+
+        resetFormForNewInvoice();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+);
+
+
+/* =========================
+   CLEAR SAVED DATA
+   ========================= */
+
+clearDataBtn.addEventListener(
+    "click",
+    function() {
+
+        let confirmed =
+            confirm(
+                "Clear all saved InvoiceFlow data?\n\nThis will delete your invoice history, saved business details, logo, and invoice number.\n\nThis cannot be undone."
+            );
+
+
+        if (!confirmed) {
+
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "invoiceHistory"
+        );
+
+        localStorage.removeItem(
+            "invoiceNumber"
+        );
+
+        localStorage.removeItem(
+            "businessName"
+        );
+
+        localStorage.removeItem(
+            "businessPhone"
+        );
+
+        localStorage.removeItem(
+            "businessEmail"
+        );
+
+        localStorage.removeItem(
+            "businessLogo"
+        );
+
+        localStorage.removeItem(
+            "bankName"
+        );
+
+        localStorage.removeItem(
+            "accountName"
+        );
+
+        localStorage.removeItem(
+            "accountNumber"
+        );
+
+        localStorage.removeItem(
+            "paymentInstructions"
+        );
+
+        localStorage.removeItem(
+            "accentColor"
+        );
+
+
+        businessName.value =
+            "";
+
+        businessPhone.value =
+            "";
+
+        businessEmail.value =
+            "";
+
+        bankName.value =
+            "";
+
+        accountName.value =
+            "";
+
+        accountNumber.value =
+            "";
+
+        paymentInstructions.value =
+            "";
+
+
+        accentColor.value =
+            "#b85c38";
+
+
+        savedLogo =
+            "";
+
+
+        logoInput.value =
+            "";
+
+
+        previewLogo.src =
+            "";
+
+        previewLogo.style.display =
+            "none";
+
+
+        resetFormForNewInvoice();
+
+
+        displayInvoiceHistory();
+
+
+        alert(
+            "All saved InvoiceFlow data has been cleared."
+        );
+    }
+);
+
 
 /* =========================
    GENERATE / UPDATE INVOICE
@@ -2129,7 +2926,7 @@ generateBtn.addEventListener(
         }
 
 
-        /* =========================
+          /* =========================
            VALIDATE ADDITIONAL ITEMS
            ========================= */
 
@@ -2228,15 +3025,16 @@ generateBtn.addEventListener(
            SAVE OR UPDATE
            ========================= */
 
-        saveInvoiceToHistory(
-            totals.total
-        );
+        let wasEditing =
+            saveInvoiceToHistory(
+                totals.total
+            );
 
 
         alert(
-            editingHistoryIndex === null
-                ? "Invoice saved successfully!"
-                : "Invoice updated successfully!"
+            wasEditing
+                ? "Invoice updated successfully!"
+                : "Invoice saved successfully!"
         );
     }
 );
@@ -2253,52 +3051,7 @@ newInvoiceBtn.addEventListener(
         saveBusinessDetails();
 
 
-        editingHistoryIndex =
-            null;
-
-
-        generateBtn.textContent =
-            "Generate Invoice";
-
-
-        createInvoiceNumber();
-
-        setTodayDate();
-
-
-        customerName.value =
-            "";
-
-        customerPhone.value =
-            "";
-
-
-        itemName.value =
-            "";
-
-        quantity.value =
-            "";
-
-        price.value =
-            "";
-
-
-        discount.value =
-            "";
-
-        tax.value =
-            "";
-
-
-        invoiceStatus.value =
-            "Unpaid";
-
-
-        itemsContainer.innerHTML =
-            "";
-
-
-        renderInvoicePreview();
+        resetFormForNewInvoice();
     }
 );
 
