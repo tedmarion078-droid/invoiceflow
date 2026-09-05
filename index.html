@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Invoice Generator</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- =========================
+         APP HEADER
+         ========================= -->
+
+    <header class="appHeader">
+
+        <div>
+
+            <p class="badge">
+                INVOICE TOOL
+            </p>
+
+            <h1>
+                Invoice Generator
+            </h1>
+
+            <p>
+                Create professional invoices in seconds.
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         BUSINESS INFORMATION
+         ========================= -->
+
+    <section class="formSection">
+
+        <h2>
+            Business Information
+        </h2>
+
+
+        <label>
+            Business Name
+        </label>
+
+        <input
+            type="text"
+            id="businessName"
+            placeholder="Enter business name"
+        >
+
+
+        <label>
+            Business Phone
+        </label>
+
+        <input
+            type="text"
+            id="businessPhone"
+            placeholder="Enter business phone"
+        >
+
+
+        <label>
+            Business Email
+        </label>
+
+        <input
+            type="email"
+            id="businessEmail"
+            placeholder="Enter business email"
+        >
+
+
+        <label>
+            Business Logo
+        </label>
+
+        <input
+            type="file"
+            id="logoInput"
+            accept="image/*"
+        >
+
+        <p class="logoHint">
+            Upload your business logo. PNG or JPG recommended.
+        </p>
+
+
+        <label>
+            Bank Name
+        </label>
+
+        <input
+            type="text"
+            id="bankName"
+            placeholder="Enter bank name"
+        >
+
+
+        <label>
+            Account Name
+        </label>
+
+        <input
+            type="text"
+            id="accountName"
+            placeholder="Enter account name"
+        >
+
+
+        <label>
+            Account Number
+        </label>
+
+        <input
+            type="text"
+            id="accountNumber"
+            placeholder="Enter account number"
+        >
+
+
+        <label>
+            Payment Instructions
+        </label>
+
+        <textarea
+            id="paymentInstructions"
+            placeholder="Example: Please make payment within 7 days."
+        ></textarea>
+
+
+        <label>
+            Invoice Accent Color
+        </label>
+
+        <input
+            type="color"
+            id="accentColor"
+            value="#b85c38"
+        >
+
+    </section>
+
+
+    <!-- =========================
+         CUSTOMER INFORMATION
+         ========================= -->
+
+    <section class="formSection">
+
+        <h2>
+            Customer Information
+        </h2>
+
+
+        <label>
+            Customer Name
+        </label>
+
+        <input
+            type="text"
+            id="customerName"
+            placeholder="Enter customer name"
+        >
+
+
+        <label>
+            Customer Phone
+        </label>
+
+        <input
+            type="text"
+            id="customerPhone"
+            placeholder="Enter customer phone"
+        >
+
+    </section>
+
+
+    <!-- =========================
+         INVOICE INFORMATION
+         ========================= -->
+
+    <section class="formSection">
+
+        <h2>
+            Invoice Information
+        </h2>
+
+
+        <label>
+            Invoice Number
+        </label>
+
+        <input
+            type="text"
+            id="invoiceNumber"
+        >
+
+
+        <label>
+            Invoice Date
+        </label>
+
+        <input
+            type="date"
+            id="invoiceDate"
+        >
+
+
+        <label>
+            Currency
+        </label>
+
+        <select id="currency">
+
+            <option value="NGN">
+                NGN ₦
+            </option>
+
+            <option value="USD">
+                USD $
+            </option>
+
+            <option value="GBP">
+                GBP £
+            </option>
+
+            <option value="EUR">
+                EUR €
+            </option>
+
+            <option value="CAD">
+                CAD CA$
+            </option>
+
+            <option value="AUD">
+                AUD A$
+            </option>
+
+            <option value="ZAR">
+                ZAR R
+            </option>
+
+            <option value="GHS">
+                GHS ₵
+            </option>
+
+            <option value="KES">
+                KES KSh
+            </option>
+
+        </select>
+
+
+        <label>
+            Invoice Status
+        </label>
+
+        <select id="invoiceStatus">
+
+            <option value="Unpaid">
+                Unpaid
+            </option>
+
+            <option value="Pending">
+                Pending
+            </option>
+
+            <option value="Paid">
+                Paid
+            </option>
+
+        </select>
+
+    </section>
+
+
+    <!-- =========================
+         ITEMS & SERVICES
+         ========================= -->
+
+    <section class="formSection">
+
+        <h2>
+            Items & Services
+        </h2>
+
+
+        <label>
+            Item or Service
+        </label>
+
+        <input
+            type="text"
+            id="itemName"
+            placeholder="Enter item or service"
+        >
+
+
+        <label>
+            Quantity
+        </label>
+
+        <input
+            type="number"
+            id="quantity"
+            placeholder="Quantity"
+            min="1"
+        >
+
+
+        <label>
+            Price
+        </label>
+
+        <input
+            type="number"
+            id="price"
+            placeholder="Price"
+            min="0"
+        >
+
+
+        <div id="itemsContainer"></div>
+
+
+        <button
+            type="button"
+            id="addItemBtn"
+            class="secondaryButton"
+        >
+            + Add Another Item
+        </button>
+
+    </section>
+
+
+    <!-- =========================
+         ADJUSTMENTS
+         ========================= -->
+
+    <section class="formSection">
+
+        <h2>
+            Adjustments
+        </h2>
+
+
+        <label>
+            Discount
+        </label>
+
+        <input
+            type="number"
+            id="discount"
+            placeholder="Discount amount"
+            min="0"
+        >
+
+
+        <label>
+            Tax (%)
+        </label>
+
+        <input
+            type="number"
+            id="tax"
+            placeholder="Tax percentage"
+            min="0"
+        >
+
+    </section>
+
+
+    <!-- =========================
+         ACTION BUTTONS
+         ========================= -->
+
+    <div class="actionButtons">
+
+        <button
+            type="button"
+            id="generateBtn"
+            class="primaryButton"
+        >
+            Generate Invoice
+        </button>
+
+
+        <button
+            type="button"
+            id="newInvoiceBtn"
+            class="secondaryButton"
+        >
+            New Invoice
+        </button>
+
+    </div>
+
+
+    <!-- =========================
+         TOTAL
+         ========================= -->
+
+    <div class="totalBox">
+
+        <p id="total">
+            Total: ₦0
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         INVOICE PREVIEW
+         ========================= -->
+
+    <section class="invoicePreview">
+
+
+        <!-- INVOICE HEADER -->
+
+        <div class="invoiceHeader">
+
+            <div class="businessBranding">
+
+
+                <img
+                    id="previewLogo"
+                    class="previewLogo"
+                    src=""
+                    alt="Business Logo"
+                    style="display: none;"
+                >
+
+
+                <div>
+
+                    <h2>
+                        INVOICE
+                    </h2>
+
+
+                    <p id="previewInvoiceNumber">
+                        Invoice #: INV-0001
+                    </p>
+
+
+                    <p id="previewInvoiceDate">
+                        Date: —
+                    </p>
+
+
+                    <span
+                        id="previewStatus"
+                        class="invoiceStatus"
+                    >
+                        Unpaid
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUSINESS DETAILS -->
+
+        <div class="businessDetails">
+
+            <h3 id="previewBusinessName">
+                Business Name
+            </h3>
+
+
+            <p id="previewBusinessPhone">
+                Phone: —
+            </p>
+
+
+            <p id="previewBusinessEmail">
+                Email: —
+            </p>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="customerBox">
+
+            <h3>
+                Bill To
+            </h3>
+
+
+            <p id="previewCustomerName">
+                Customer Name
+            </p>
+
+
+            <p id="previewCustomerPhone">
+                Phone: —
+            </p>
+
+        </div>
+
+
+        <!-- ITEMS TABLE -->
+
+        <div class="invoiceItems">
+
+
+            <div class="itemTableHeader">
+
+                <span>
+                    Item / Service
+                </span>
+
+
+                <span>
+                    Quantity
+                </span>
+
+
+                <span>
+                    Unit Price
+                </span>
+
+
+                <span>
+                    Amount
+                </span>
+
+            </div>
+
+
+            <div
+                id="previewMainItem"
+                class="previewItemRow"
+            >
+
+                <span id="previewItemName">
+                    Item or Service
+                </span>
+
+
+                <span id="previewQuantity">
+                    0
+                </span>
+
+
+                <span id="previewPrice">
+                    ₦0
+                </span>
+
+
+                <span id="previewItemTotal">
+                    ₦0
+                </span>
+
+            </div>
+
+
+            <div
+                id="previewItemsContainer"
+            ></div>
+
+        </div>
+
+
+        <!-- TOTALS -->
+
+        <div class="invoiceTotals">
+
+
+            <p id="previewSubtotal">
+                Subtotal: ₦0
+            </p>
+
+
+            <p id="previewDiscount">
+                Discount: ₦0
+            </p>
+
+
+            <p id="previewTax">
+                Tax: ₦0
+            </p>
+
+
+            <h3 id="previewTotal">
+                Total: ₦0
+            </h3>
+
+        </div>
+
+
+        <!-- PAYMENT DETAILS -->
+
+        <div
+            id="previewPayment"
+            class="paymentBox"
+        >
+
+            <h3>
+                Payment Details
+            </h3>
+
+
+            <p id="previewBankName">
+                Bank: —
+            </p>
+
+
+            <p id="previewAccountName">
+                Account Name: —
+            </p>
+
+
+            <p id="previewAccountNumber">
+                Account Number: —
+            </p>
+
+
+            <p id="previewPaymentInstructions">
+                Payment instructions: —
+            </p>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="invoiceFooter">
+
+            <p>
+                Thank you for your business.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- DOWNLOAD -->
+
+    <button
+        type="button"
+        id="downloadBtn"
+        class="primaryButton downloadButton"
+    >
+        Download / Print Invoice
+    </button>
+
+
+    <!-- =========================
+         INVOICE HISTORY
+         ========================= -->
+
+    <section class="historySection">
+
+        <h2>
+            Invoice History
+        </h2>
+
+
+        <div id="historyContainer">
+
+            <p class="emptyHistory">
+                No saved invoices yet.
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
