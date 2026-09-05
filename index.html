@@ -419,6 +419,16 @@
             New Invoice
         </button>
 
+
+        <button
+            type="button"
+            id="cancelEditBtn"
+            class="cancelButton"
+            style="display: none;"
+        >
+            Cancel Edit
+        </button>
+
     </div>
 
 
@@ -429,7 +439,7 @@
     <div class="totalBox">
 
         <p id="total">
-            Total: ₦0
+            Total: ₦0.00
         </p>
 
     </div>
@@ -576,12 +586,12 @@
 
 
                 <span id="previewPrice">
-                    ₦0
+                    ₦0.00
                 </span>
 
 
                 <span id="previewItemTotal">
-                    ₦0
+                    ₦0.00
                 </span>
 
             </div>
@@ -600,22 +610,22 @@
 
 
             <p id="previewSubtotal">
-                Subtotal: ₦0
+                Subtotal: ₦0.00
             </p>
 
 
             <p id="previewDiscount">
-                Discount: ₦0
+                Discount: -₦0.00
             </p>
 
 
             <p id="previewTax">
-                Tax: ₦0
+                Tax: ₦0.00
             </p>
 
 
             <h3 id="previewTotal">
-                Total: ₦0
+                Total: ₦0.00
             </h3>
 
         </div>
@@ -685,9 +695,30 @@
 
     <section class="historySection">
 
-        <h2>
-            Invoice History
-        </h2>
+        <div class="historyHeader">
+
+            <div>
+
+                <h2>
+                    Invoice History
+                </h2>
+
+                <p class="historyHint">
+                    Your saved invoices appear here.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="clearDataBtn"
+                class="clearDataButton"
+            >
+                Clear Saved Data
+            </button>
+
+        </div>
 
 
         <div id="historyContainer">
