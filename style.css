@@ -142,6 +142,17 @@ button {
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
 }
 
 .primaryButton {
@@ -160,6 +171,15 @@ button {
 
 .secondaryButton:hover {
     opacity: 0.9;
+}
+
+.cancelButton {
+    background: #eee9e3;
+    color: #29343a;
+}
+
+.cancelButton:hover {
+    background: #e3ddd5;
 }
 
 .actionButtons {
@@ -188,6 +208,10 @@ button {
 #itemsContainer button {
     background: #eee9e3;
     color: #29343a;
+}
+
+#itemsContainer button:hover {
+    background: #e3ddd5;
 }
 
 
@@ -264,7 +288,8 @@ button {
    INVOICE STATUS
    ========================= */
 
-.invoiceStatus {
+.invoiceStatus,
+.historyStatus {
     display: inline-block;
     margin-top: 8px;
     padding: 5px 10px;
@@ -275,17 +300,20 @@ button {
     font-weight: bold;
 }
 
-.invoiceStatus.status-paid {
+.invoiceStatus.status-paid,
+.historyStatus.status-paid {
     background: #dff3e5;
     color: #23733b;
 }
 
-.invoiceStatus.status-pending {
+.invoiceStatus.status-pending,
+.historyStatus.status-pending {
     background: #fff0c9;
     color: #8a6500;
 }
 
-.invoiceStatus.status-unpaid {
+.invoiceStatus.status-unpaid,
+.historyStatus.status-unpaid {
     background: #f8dddd;
     color: #9b3030;
 }
@@ -469,8 +497,32 @@ button {
     margin-top: 45px;
 }
 
-.historySection h2 {
+.historyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
     margin-bottom: 20px;
+}
+
+.historySection h2 {
+    margin: 0;
+}
+
+.historyHint {
+    margin: 6px 0 0;
+    color: #69747a;
+    font-size: 13px;
+}
+
+.clearDataButton {
+    flex-shrink: 0;
+    background: #eee9e3;
+    color: #29343a;
+}
+
+.clearDataButton:hover {
+    background: #e3ddd5;
 }
 
 .emptyHistory {
@@ -480,6 +532,7 @@ button {
     border-radius: 10px;
     color: #69747a;
     text-align: center;
+    line-height: 1.5;
 }
 
 .historyCard {
@@ -488,6 +541,10 @@ button {
     background: #faf9f7;
     border: 1px solid #e5e0d9;
     border-radius: 12px;
+}
+
+.historyCard:hover {
+    border-color: #d8d2ca;
 }
 
 .historyTop {
@@ -515,13 +572,7 @@ button {
 }
 
 .historyStatus {
-    display: inline-block;
-    margin: 10px 0 0;
-    padding: 5px 9px;
-    background: #eee9e3;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
+    margin-top: 10px;
 }
 
 .historyButtons {
@@ -539,9 +590,26 @@ button {
     color: #ffffff;
 }
 
+.viewInvoiceBtn:hover {
+    opacity: 0.9;
+}
+
+.duplicateInvoiceBtn {
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+.duplicateInvoiceBtn:hover {
+    opacity: 0.9;
+}
+
 .deleteInvoiceBtn {
     background: #eee9e3;
     color: #29343a;
+}
+
+.deleteInvoiceBtn:hover {
+    background: #e3ddd5;
 }
 
 
@@ -552,12 +620,17 @@ button {
 @media (max-width: 650px) {
 
     body {
-        padding: 15px 10px;
+        padding: 12px 8px;
     }
 
     .container {
-        padding: 20px;
+        padding: 16px;
         border-radius: 12px;
+    }
+
+    .appHeader {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
     }
 
     .appHeader h1 {
@@ -565,15 +638,33 @@ button {
     }
 
     .formSection {
+        margin-bottom: 20px;
         padding: 18px;
+    }
+
+    .formSection h2 {
+        font-size: 18px;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+    }
+
+    .actionButtons button {
+        width: 100%;
     }
 
     #itemsContainer > div {
         grid-template-columns: 1fr;
     }
 
+    #itemsContainer button {
+        width: 100%;
+    }
+
     .invoicePreview {
-        padding: 22px;
+        padding: 20px;
+        border-radius: 10px;
     }
 
     .businessBranding {
@@ -593,12 +684,24 @@ button {
         max-width: 100%;
     }
 
+    .historyHeader {
+        flex-direction: column;
+    }
+
+    .clearDataButton {
+        width: 100%;
+    }
+
     .historyTop {
         align-items: flex-start;
     }
 
     .historyButtons {
         flex-direction: column;
+    }
+
+    .historyButtons button {
+        width: 100%;
     }
 }
 
